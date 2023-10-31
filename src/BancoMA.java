@@ -9,9 +9,12 @@ public class BancoMA {
         Poupanca poupanca = null;
         Conta conta = null;
 
-        try {
+
+        try { // Esse try catch é para o caso do usuário digitar algo diferente de números inteiros
+
             while (controlador) {
                 int opcao;
+
                 //imprime a tela inicial do Banco
                 layouts.layoutsTelaDeIniciar();
 
@@ -21,6 +24,7 @@ public class BancoMA {
 
                 switch (opcao) {
                     case 1:
+                        // cadastramos um cliente com os dados pedidos, caso ocorra algum erro ele mostra uma mensagem de erro e reinicia o processo
                         Scanner leitorCliente = new Scanner(System.in);
                         System.out.print("\nDigite o nome do cliente: ");
                         String nomeCliente = leitorCliente.nextLine();
@@ -28,10 +32,13 @@ public class BancoMA {
                         System.out.print("\nDigite o cpf do cliente: ");
                         String cpfCliente = leitorCliente.nextLine();
 
+                        // verificamos se as variaveis foram deixadas em vazio ou como nulas
                         if (!nomeCliente.equals(null) && !nomeCliente.equals("") && !cpfCliente.equals(null) && !cpfCliente.equals("")) {
 
+                            // validamos se o CPF é existente
                             if (Validacoes.validarCPF(cpfCliente)) {
 
+                                // criamos um cliente com os dados recebidos e mostramos uma mensagem após
                                 cliente = new Cliente(nomeCliente, cpfCliente);
 
                                 System.out.println("\nCliente cadastrado com sucesso!\n");
@@ -40,6 +47,7 @@ public class BancoMA {
                                 System.out.println("CPF Incorreto");
                             }
                         } else {
+                            // caso ocorra algum erro as variaveis serão zeradas e retornara para a menu inicial
                             System.out.println("\nErro ao cadastrar cliente\n");
                             cliente = null;
                         }
