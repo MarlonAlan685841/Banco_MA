@@ -9,4 +9,7 @@ public class Conta extends ContaAbstrata {
     public void debitar(double saldoDebi){
         this.saldo = saldo - saldoDebi;
     }
+    public void resetSaldoConta(double saldoDaConta){
+        this.saldo = saldoDaConta;
+    }
 }

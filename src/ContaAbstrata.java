@@ -1,18 +1,18 @@
 public abstract class ContaAbstrata {
-    private String numero;
+    private String numeroConta;
     private Cliente cliente;
     double saldo;
-    public ContaAbstrata(String numero, Cliente cliente, double saldo){
+    public ContaAbstrata(String numeroConta, Cliente cliente, double saldo){
         this.saldo = saldo;
         this.cliente = cliente;
-        this.numero = numero;
+        this.numeroConta = numeroConta;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getNumeroConta() {
+        return numeroConta;
     }
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setNumeroConta(String numeroConta) {
+        this.numeroConta = numeroConta;
     }
 
     public Cliente getCliente() {
