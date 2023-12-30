@@ -1,6 +1,6 @@
 public class Layouts {
 
-    public void layoutsTelaDeIniciar(){
+    public void layoutsTelaDeIniciar(){//Aqui é a visualização para orientar o usuário.
         System.out.println("\n-------------------------");
         System.out.println("Banco MA");
         System.out.println("-------------------------");

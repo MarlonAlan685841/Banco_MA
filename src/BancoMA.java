@@ -32,7 +32,7 @@ public class BancoMA {
                         String cpfCliente = leitorCliente.nextLine();
 
                         // verificamos se as variáveis foram deixadas em vazio ou como nulas
-                        if (!nomeCliente.equals(null) && !nomeCliente.equals("") && !cpfCliente.equals(null) && !cpfCliente.equals("")) {
+                        if (Validacoes.verificadorDeVazio(nomeCliente, cpfCliente)) {
 
                             // validamos se o CPF é existente
                             if (Validacoes.validarCPF(cpfCliente)) {
@@ -78,18 +78,21 @@ public class BancoMA {
                     case 3:
                         // caso o usuario não tenha criado uma conta, o programa retornará à página inicial
                         if (conta != null) {
+                            try {
+                                //cria o número da poupança com MA + os seis primeiros números do CPF do cliente
+                                String numeroPoup = "MAP" + cliente.getCpf().substring(0, 6);
 
-                            //cria o número da poupança com MA + os seis primeiros números do CPF do cliente
-                            String numeroPoup = "MAP" + cliente.getCpf().substring(0, 6);
+                                //cria uma conta poupança com os dados do cliente
+                                poupanca = new Poupanca(numeroPoup, cliente, 0.0);
 
-                            //cria uma conta poupança com os dados do cliente mais o número da conta poupança criado anteriormente
-                            poupanca = new Poupanca(numeroPoup, cliente, 0.0, 0.0);
-
-                            // verificando se os dados foram passados corretamente caso false retorna uma mensagem de erro
-                            if (poupanca.getNumeroConta().equals(numeroPoup)) {
-                                System.out.println("\nConta poupanca criada com sucesso\n");
-                            } else {
-                                System.out.println("\n“Erro ao criar conta poupanca\n");
+                                // verificando se os dados foram passados corretamente caso false retorna uma mensagem de erro
+                                if (poupanca.getNumeroConta().equals(numeroPoup)) {
+                                    System.out.println("\nConta poupanca criada com sucesso\n");
+                                } else {
+                                    System.out.println("\n“Erro ao criar conta poupanca\n");
+                                }
+                            }catch (Exception e){
+                                System.out.println("\nErro ao criar a conta poupanca");
                             }
                         } else {
                             System.out.println("\nPara criar uma conta poupanca e necessario primeiro criar uma conta no Banco MA\n");
@@ -105,7 +108,7 @@ public class BancoMA {
                             double valordep = leitordepositar.nextDouble();
                             // Aqui salvamos o saldo anterior para que caso aconteça um erro na tranferencia o saldo irá continuar inalterado
                             double saldoanterior = conta.getSaldo();
-                            conta.creditar(valordep);
+                            conta.creditar(conta.getSaldo(), valordep);
 
                             if (conta.getSaldo() > saldoanterior) {
                                 System.out.println("\nDeposito realizado com sucesso\n");
@@ -128,7 +131,7 @@ public class BancoMA {
 
                             // Aqui salvamos o saldo anterior para que caso aconteça um erro na tranferencia o saldo irá continuar inalterado
                             double saldoanterior = conta.getSaldo();
-                            conta.debitar(valorsaque);
+                            conta.debitar(conta.getSaldo(), valorsaque);
 
                             if (conta.getSaldo() < saldoanterior) {
                                 System.out.println("\nSaque realizado com sucesso\n");
@@ -142,27 +145,26 @@ public class BancoMA {
                         }
                         break;
 
-                    case 6:
+                    case 6:// Tranferência da conta para a conta poupança
+                        // caso o usuario não tenha criado uma conta poupança, o programa retornará à página inicial
                         if (poupanca != null) {
                             Scanner leitortransf = new Scanner(System.in);
                             double saldoAnteriorCon = conta.getSaldo(), saldoAnteriorPou = poupanca.getSaldoPou();
-
 
                             try {
                                 System.out.print("\nInformar o valor a ser tranferido : ");
                                 double valortrans = leitortransf.nextDouble();
 
+                                conta.debitar(conta.getSaldo(), valortrans);
+                                poupanca.creditar(poupanca.getSaldo(), valortrans);
 
-                                poupanca.creditar(valortrans);
-
-                                conta.debitar(valortrans);
-
-                                if (conta.saldo != saldoAnteriorCon && conta.saldo == (saldoAnteriorCon - valortrans) && poupanca.saldo != saldoAnteriorPou && poupanca.saldo == (saldoAnteriorPou + valortrans)) {
+                                if (conta.saldo != saldoAnteriorCon && conta.saldo == (saldoAnteriorCon - valortrans) &&
+                                        poupanca.saldo != saldoAnteriorPou && poupanca.saldo == (saldoAnteriorPou + (valortrans+(valortrans * Poupanca.TAXA)))) {
                                     System.out.println("\nTransferencia realizada com sucesso\n");
                                 } else {
                                     poupanca.resetSaldoPoupanca(saldoAnteriorPou);
                                     conta.resetSaldoConta(saldoAnteriorCon);
-                                    System.out.println("\nErro ao efetuar transferencia..\n");
+                                    System.out.println("\nErro ao efetuar transferencia\n");
                                 }
                             } catch (Exception e) {
                                 poupanca.setSaldo(saldoAnteriorPou);
@@ -176,9 +178,8 @@ public class BancoMA {
 
                         break;
 
-
-                    case 7:
-
+                    case 7:// Tranferência da poupanca para a conta conta
+                        // caso o usuario não tenha criado uma conta poupança, o programa retornará à página inicial
                         if (poupanca != null) {
 
                             Scanner leitortrnsf = new Scanner(System.in);
@@ -187,10 +188,9 @@ public class BancoMA {
 
                             double saldoAnteriorPoupanca = poupanca.getSaldo();
                             double saldoAnteriorCon = conta.saldo;
-                            conta.creditar(valortrans);
 
-                            poupanca.debitar(valortrans);
-
+                            poupanca.debitar(poupanca.getSaldo(), valortrans);
+                            conta.creditar(conta.getSaldo(), valortrans);
 
                             if (poupanca.getSaldoPou() > saldoAnteriorPoupanca || poupanca.getSaldoPou() < saldoAnteriorPoupanca) {
                                 System.out.println("\nTransferencia realizada com sucesso\n");
@@ -233,7 +233,6 @@ public class BancoMA {
                         break;
                     default:
                         System.out.println("\nOpcao Invalida!\n");
-
                 }
             }
         } catch (Exception e) {

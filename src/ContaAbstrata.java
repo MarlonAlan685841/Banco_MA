@@ -29,6 +29,6 @@ public abstract class ContaAbstrata {
         this.saldo = saldo;
     }
 
-    public abstract void creditar(double saldoCred);
-    public abstract void debitar(double saldoDebi);
+    public abstract void creditar(double saldoEmConta, double saldoCred);
+    public abstract void debitar(double saldoEmConta, double saldoDebi);
 }

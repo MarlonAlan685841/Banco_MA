@@ -29,10 +29,11 @@ public class Validacoes {
         return d1 == digitoVerificador1 && d2 == digitoVerificador2;
     }
 
-    public static boolean verificarDeVazio(String nome, String cpf) {
-        boolean resposta = false;
-        if (nome != null && nome != "" && cpf != null && cpf != ""){
-            resposta = true;
+    public static boolean verificadorDeVazio(String nome, String cpf) {
+        boolean resposta = true;
+        if (nome == null || nome.equals("") || cpf == null || cpf.equals("")){
+            resposta = false;
+            System.out.println("\nOs campos nome e cpf nao podem ficar vazio");
         }
         return resposta;
     }
